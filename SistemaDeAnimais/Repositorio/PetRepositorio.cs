@@ -9,14 +9,27 @@ namespace SistemaDeAnimais.Repositorio
     {
         private readonly SistemaDeAnimaisContext _context;
 
+        public PetRepositorio(SistemaDeAnimaisContext context)
+        {
+            _context = context;
+        }
         public async Task<Pet> BuscarPorId(int id)
         {
-            return await _context.Pets.FirstOrDefaultAsync(x => x.Id == id);
+            var petId = await _context.Pets.FirstOrDefaultAsync(x => x.Id == id);
+
+            return petId;
+        }
+
+        public async Task<List<Usuario>> BuscarTodosUsuarioDoPet()
+        {
+            var usuarioPet = await _context.Usuarios.ToListAsync();
+            return usuarioPet;
         }
 
         public async Task<List<Pet>> BuscarTodosPet()
         {
-            return await _context.Pets.ToListAsync();
+            var pet = await _context.Pets.Include(x => x.Usuario).ToListAsync();
+            return pet;
         }
 
         public async Task<Pet> Adicionar(Pet pet)
@@ -39,6 +52,7 @@ namespace SistemaDeAnimais.Repositorio
             petId.Raca = pet.Raca;
             petId.Cor = pet.Cor;
             petId.Porte = pet.Porte;
+            petId.UsuarioId = pet.UsuarioId;
 
             _context.Pets.Update(petId);
             await _context.SaveChangesAsync();
@@ -59,6 +73,6 @@ namespace SistemaDeAnimais.Repositorio
 
             return true;
         }
-
+        
     }
 }

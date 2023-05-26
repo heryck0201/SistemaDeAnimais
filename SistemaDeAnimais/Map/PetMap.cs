@@ -14,11 +14,7 @@ namespace SistemaDeAnimais.Map
                 builder.Property(x => x.Raca).IsRequired().HasMaxLength(100);
                 builder.Property(x => x.Cor).IsRequired().HasMaxLength(100);
                 builder.Property(x => x.Porte).IsRequired().HasMaxLength(100);
-                builder.Property(x => x.Porte).IsRequired().HasMaxLength(100);
-                builder.Property(x => x.UsuarioId);
-
-                builder.HasOne(x => x.Usuario);
-        }
-        
+                builder.HasOne(x => x.Usuario).WithMany(x => x.Pet).HasForeignKey(x => x.UsuarioId);
+            }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SistemaDeAnimais.Data;
 
@@ -11,9 +12,10 @@ using SistemaDeAnimais.Data;
 namespace SistemaDeAnimais.Migrations
 {
     [DbContext(typeof(SistemaDeAnimaisContext))]
-    partial class SistemaDeAnimaisContextModelSnapshot : ModelSnapshot
+    [Migration("20230428165108_deleteBanco")]
+    partial class deleteBanco
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

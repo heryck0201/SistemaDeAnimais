@@ -19,15 +19,15 @@ namespace SistemaDeAnimais.Controllers
         }
 
         [Authorize("Bearer")]
-        [HttpGet]
-        public async Task<ActionResult<List<Pet>>> BuscarTodosUsuarios()
+        [HttpGet("BuscarTodosPet")]
+        public async Task<ActionResult<List<Pet>>> BuscarTodosPet()
         {
             List<Pet> usuario = await _petRepositorio.BuscarTodosPet();
 
-            return Ok();
+            return Ok(usuario);
         }
 
-        [Authorize("Bearer")]
+        //[Authorize("Bearer")]
         [HttpGet("{id}")]
         public async Task<ActionResult<Pet>> BuscarId(int id)
         {
@@ -37,17 +37,17 @@ namespace SistemaDeAnimais.Controllers
         }
 
         [Authorize("Bearer")]
-        [HttpPost]
-        public async Task<ActionResult<Pet>> Cadastrar([FromBody] Pet pet)
+        [HttpPost("CriarPet")]
+        public async Task<ActionResult<Pet>> CriarPet([FromBody] Pet pet)
         {
             Pet petId = await _petRepositorio.Adicionar(pet);
 
             return Ok(petId);
         }
 
-        [Authorize("Bearer")]
+        //[Authorize("Bearer")]
         [HttpPut("{id}")]
-        public async Task<ActionResult<Usuario>> Atualizar([FromBody] Pet pet, int id)
+        public async Task<ActionResult<Pet>> Atualizar([FromBody] Pet pet, int id)
         {
             pet.Id = id;
             Pet petId = await _petRepositorio.Atualizar(pet, id);

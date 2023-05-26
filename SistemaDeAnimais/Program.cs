@@ -1,5 +1,9 @@
+﻿using Autofac.Core;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -19,9 +23,35 @@ namespace SistemaDeAnimais
             // Add services to the container.
 
             builder.Services.AddControllers();
+
+            //builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
+            //{
+            //    builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+            //}));
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                    builder => builder.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
+            });
+
+            builder.Services.AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Latest)
+                .AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling =
+                                   Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
-            //ver aaula do macoratti 161 para poder fazer os testes
+            //builder.Services.AddEndpointsApiExplorer();
+
+            builder.Services.AddAuthorization(auth =>
+            {
+                auth.AddPolicy("Bearer", new AuthorizationPolicyBuilder()
+                    .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme‌​)
+                    .RequireAuthenticatedUser().Build());
+            });
+
             builder.Services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SistemaDeAnimais", Version = "v1" });
@@ -33,10 +63,10 @@ namespace SistemaDeAnimais
                     Scheme = "Bearer",
                     BearerFormat = "JWT",
                     In = ParameterLocation.Header,
-                    Description = "Header de autoriza��o JWT usando o esquema Bearer.\r\n\r\nInforme 'Bearer'[espa�o] e o seu token.\r\n\r\nExamplo: \'Bearer 1234abcdef\'",
+                    Description = "Header de autorização JWT usando o esquema Bearer.\r\n\r\nInforme 'Bearer'[espaço] e o seu token.\r\n\r\nExamplo: \'Bearer 1234abcdef\'",
 
                 });
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement 
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
                     {
                         new OpenApiSecurityScheme
@@ -57,7 +87,7 @@ namespace SistemaDeAnimais
                 options => options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection"))
                 );
 
-            builder.Services.AddIdentity<IdentityUser,IdentityRole>()
+            builder.Services.AddIdentity<IdentityUser, IdentityRole>()
                             .AddEntityFrameworkStores<SistemaDeAnimaisContext>()
                             .AddDefaultTokenProviders();
 
@@ -83,14 +113,26 @@ namespace SistemaDeAnimais
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-                app.UseSwagger();
-                app.UseSwaggerUI();
+                
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI();
+            //app.UseSwaggerUI(c =>
+            //{
+            //    c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+            //    c.RoutePrefix = string.Empty;
+            //});
+
+            //            app.UseCors(builder => builder
+            //.AllowAnyHeader()
+            //.AllowAnyMethod()
+            //.SetIsOriginAllowed((host) => true)
+            //.AllowCredentials());
 
             app.UseHttpsRedirection();
 
             app.UseAuthentication();
-
             app.UseAuthorization();
 
             app.MapControllers();

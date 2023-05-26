@@ -16,15 +16,16 @@ namespace SistemaDeAnimais.Repositorio
 
         public async Task<Usuario> BuscarPorId(int id)
         {
-            return await _context.Usuarios.FirstOrDefaultAsync(x => x.Id == id);
+            var buscarId = await _context.Usuarios.FirstOrDefaultAsync(x => x.Id == id);
+            return buscarId;
         }
 
         public async Task<List<Usuario>> BuscarTodosUsuarios()
         {
-            return await _context.Usuarios.ToListAsync();
+            var listaUsuario = await _context.Usuarios.ToListAsync();
+            return listaUsuario;
         }
 
-        
         public async Task<Usuario> Adicionar(Usuario usuario)
         {
            await _context.Usuarios.AddAsync(usuario);
@@ -45,7 +46,7 @@ namespace SistemaDeAnimais.Repositorio
             usarioId.Sobrenome= usuario.Sobrenome;
             usarioId.Email= usuario.Email;
 
-            _context.Usuarios.Update(usarioId);
+             _context.Usuarios.Update(usarioId);
             await _context.SaveChangesAsync();
 
             return usarioId;

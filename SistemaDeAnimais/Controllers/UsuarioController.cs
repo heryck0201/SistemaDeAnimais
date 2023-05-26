@@ -1,13 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using SistemaDeAnimais.DTOs;
 using SistemaDeAnimais.Entidades;
 using SistemaDeAnimais.Repositorio.IRepositorios;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+
 
 namespace SistemaDeAnimais.Controllers
 {
@@ -25,17 +20,17 @@ namespace SistemaDeAnimais.Controllers
             //_congiguration = congiguration;
         }
 
-        //[Authorize("Bearer")]
+        [Authorize("Bearer")]
         [HttpGet("BuscarTodosUsuarios")]
         public async Task<ActionResult<List<Usuario>>>BuscarTodosUsuarios()
         {
             List<Usuario> usuario = await _usuarioRepositorio.BuscarTodosUsuarios();
 
-            return Ok();
+            return Ok(usuario);
         }
 
-        //[Authorize("Bearer")]
-        [HttpGet("BuscarId")]
+        [Authorize("Bearer")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<Usuario>> BuscarId(int id)
         {
             Usuario usuario = await _usuarioRepositorio.BuscarPorId(id);
@@ -43,7 +38,7 @@ namespace SistemaDeAnimais.Controllers
             return Ok(usuario);
         }
 
-        //[Authorize("Bearer")]
+        [Authorize("Bearer")]
         [HttpPost("CriarUsuario")]
         public async Task<ActionResult<Usuario>> CriarUsuario([FromBody] Usuario usuario)
         {
@@ -53,7 +48,7 @@ namespace SistemaDeAnimais.Controllers
         }
 
         //[Authorize("Bearer")]
-        [HttpPut("Atualizar")]
+        [HttpPut("{id}")]
         public async Task<ActionResult<Usuario>> Atualizar([FromBody] Usuario usuario, int id)
         {
             usuario.Id = id;
@@ -62,8 +57,8 @@ namespace SistemaDeAnimais.Controllers
             return Ok(usarioId);
         }
 
-        //[Authorize("Bearer")]
-        [HttpDelete("Apagar")]
+        [Authorize("Bearer")]
+        [HttpDelete("{id}")]
         public async Task<ActionResult<Usuario>> Apagar(int id)
         {
             bool apagar = await _usuarioRepositorio.Apagar(id);
